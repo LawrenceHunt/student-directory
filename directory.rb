@@ -2,7 +2,7 @@
 
 def interactive_menu
   print_menu
-  process(gets.chomp)
+  process(STDIN.gets.chomp)
 end
 
 def print_menu
@@ -48,31 +48,31 @@ def input_students
   puts "To finish, just hit return twice".center(60)
 
 #get the first name
-name = gets.chomp
+name = STDIN.gets.chomp
 
 #while the name is not empty, repeat this code
   while !name.empty? do
     puts "Cohort?".center(60)
-    cohort = gets.chomp
+    cohort = STDIN.gets.chomp
         if cohort.empty?
            cohort = "November"
         end
 
 
     puts "Hobby?".center(60)
-    hobby = gets.chomp
+    hobby = STDIN.gets.chomp
         if hobby.empty?
            hobby = "Baseball"
         end
 
     puts "Country of Origin?".center(60)
-    country = gets.chomp
+    country = STDIN.gets.chomp
         if country.empty?
         country = "England"
         end
 
     puts "Height?".center(60)
-    height = gets.chomp
+    height = STDIN.gets.chomp
         if height.empty?
            height = 160
         end
@@ -111,8 +111,8 @@ def save_students
   interactive_menu
 end
 
-def load_students
-  file = File.open("students.csv", "r")
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
   name, cohort = line.chomp.split(", ")
   @students << {name: name, cohort: cohort.to_sym}
@@ -121,4 +121,17 @@ file.close
 interactive_menu
 end
 
+def try_load_students
+  filename = ARGV.first
+  return if filename.nil?
+  if File.exists?(filename)
+    load_students(filename)
+    puts "Loaded #{@students.count}students from #{filename}"
+  else
+    puts "Sorry, #{filename} doesn't seem to exist."
+    exit
+  end
+end
+
+try_load_students
 interactive_menu
